@@ -54,16 +54,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 // clang-format on
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-    // レイヤー1と2が両方有効ならスクロール、2のみならマウス
-    if ((state & (1 << 1)) && (state & (1 << 2))) {
-        keyball_set_scroll_mode(true);
-    } else if (state & (1 << 2)) {
-        keyball_set_scroll_mode(false);
-    } else if (state & (1 << 1)) {
-        keyball_set_scroll_mode(true);
-    } else {
-        keyball_set_scroll_mode(false);
-    }
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
     keyball_handle_auto_mouse_layer_change(state);
 #endif

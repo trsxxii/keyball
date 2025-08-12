@@ -846,3 +846,31 @@ uint8_t mod_config(uint8_t mod) {
 }
 
 #endif
+
+enum custom_keycodes {
+    USER0 = SAFE_RANGE, // ホールドでスクロールモード
+};
+
+static uint16_t user0_timer;
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case USER0:
+            if (record->event.pressed) {
+                user0_timer = timer_read();
+                keyball_set_scroll_mode(true);
+            } else {
+                if (timer_elapsed(user0_timer) < TAPPING_TERM) {
+                    // タップ → Ctrl + 左クリック
+                    register_code(KC_LCTL);
+                    register_code(KC_MS_BTN1);
+                    unregister_code(KC_MS_BTN1);
+                    unregister_code(KC_LCTL);
+                }
+            keyball_set_scroll_mode(false);
+            }
+
+            return false;
+    }
+    return true;
+}
