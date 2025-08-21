@@ -684,16 +684,6 @@ static void pressing_keys_update(uint16_t keycode, keyrecord_t *record) {
     }
 }
 
-#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
-bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
-    switch (keycode) {
-        case SCRL_MO:
-            return true;
-    }
-    return is_mouse_record_user(keycode, record);
-}
-#endif
-
 bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
     // store last keycode, row, and col for OLED
     keyball.last_kc  = keycode;
@@ -713,7 +703,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
     // reduce auto mouse timeout if mouse key is pressed.
     if ((is_mouse_record_kb(keycode, record) || IS_MOUSEKEY(keycode)) && record->event.pressed) {
-        set_auto_mouse_timeout(keyball_get_auto_mouse_timeout());
+        set_auto_mouse_timeout(get_auto_mouse_keep_time());
         keyball.total_mouse_movement = 0;
     }
 #endif
@@ -846,69 +836,3 @@ uint8_t mod_config(uint8_t mod) {
 }
 
 #endif
-
-enum custom_keycodes {
-    USER0 = SAFE_RANGE, // ホールドでスクロールモード
-    USER1,              // ミュート
-    USER2,              // 音量アップ
-    USER3,              // 音量ダウン
-    USER4,              // 再生/一時停止
-    USER5,              // 次のトラック
-    USER6               // 前のトラック
-};
-
-static uint16_t user0_timer;
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case USER0:
-            if (record->event.pressed) {
-                user0_timer = timer_read();
-                keyball_set_scroll_mode(true);
-            } else {
-                if (timer_elapsed(user0_timer) < TAPPING_TERM) {
-                    // タップ → Ctrl + 左クリック
-                    register_code(KC_LCTL);
-                    register_code(KC_MS_BTN1);
-                    unregister_code(KC_MS_BTN1);
-                    unregister_code(KC_LCTL);
-                }
-                keyball_set_scroll_mode(false);
-            }
-            return false;
-
-        case USER1:
-            if (record->event.pressed) {
-                register_code(KC_AUDIO_MUTE);
-            } else {
-                unregister_code(KC_AUDIO_MUTE); 
-            }
-            return false;
-
-        case USER2:
-            tap_code(KC_AUDIO_VOL_UP);
-            return false;
-
-        case USER3:
-            tap_code(KC_AUDIO_VOL_DOWN);
-            return false;
-
-        case USER4:
-            if (record->event.pressed) {
-                register_code(KC_MEDIA_PLAY_PAUSE);
-            } else {
-                unregister_code(KC_MEDIA_PLAY_PAUSE);
-            }
-            return false;
-
-        case USER5:
-            tap_code(KC_MEDIA_NEXT_TRACK);
-            return false;
-
-        case USER6:
-            tap_code(KC_MEDIA_PREV_TRACK);
-            return false;
-
-    }
-    return true;
-}

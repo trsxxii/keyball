@@ -70,3 +70,92 @@ void oledkit_render_info_user(void) {
     keyball_oled_render_layerinfo();
 }
 #endif
+
+enum custom_keycodes {
+    USER0 = SAFE_RANGE, // ホールドでスクロールモード
+    USER1,              // ミュート
+    USER2,              // 音量アップ
+    USER3,              // 音量ダウン
+    USER4,              // 再生/一時停止
+    USER5,              // 次のトラック
+    USER6,              // 前のトラック
+    USER7               // Mac用 Mission Control
+};
+
+static uint16_t user0_timer;
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case USER0:
+            if (record->event.pressed) {
+                user0_timer = timer_read();
+                keyball_set_scroll_mode(true);
+            } else {
+                if (timer_elapsed(user0_timer) < TAPPING_TERM) {
+                    register_code(KC_LCTL);
+                    wait_ms(10);                // Ctrl が確実に押された状態を伝える
+                    register_code(KC_MS_BTN1);
+                    wait_ms(30);                // クリックを認識させる
+                    unregister_code(KC_MS_BTN1);
+                    wait_ms(10);
+                    unregister_code(KC_LCTL);
+                }
+                keyball_set_scroll_mode(false);
+            }
+            return false;
+
+        case USER1:
+            if (record->event.pressed) {
+                register_code(KC_AUDIO_MUTE);
+            } else {
+                unregister_code(KC_AUDIO_MUTE); 
+            }
+            return false;
+
+        case USER2:
+            tap_code(KC_AUDIO_VOL_UP);
+            return false;
+
+        case USER3:
+            tap_code(KC_AUDIO_VOL_DOWN);
+            return false;
+
+        case USER4:
+            if (record->event.pressed) {
+                register_code(KC_MEDIA_PLAY_PAUSE);
+            } else {
+                unregister_code(KC_MEDIA_PLAY_PAUSE);
+            }
+            return false;
+
+        case USER5:
+            tap_code(KC_MEDIA_NEXT_TRACK);
+            return false;
+
+        case USER6:
+            tap_code(KC_MEDIA_PREV_TRACK);
+            return false;
+
+        case USER7:
+            tap_code16(C(KC_UP));
+            return false;
+
+    }
+    return true;
+}
+
+#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
+bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
+    switch (keycode) {
+        case SCRL_MO:
+        case KC_MS_BTN1:
+        case KC_MS_BTN2:
+        case KC_MS_BTN3:
+        case KC_MS_BTN4:
+        case KC_MS_BTN5:
+        case USER0:
+        case USER7:
+            return true;
+    }
+    return is_mouse_record_user(keycode, record);
+}
+#endif
