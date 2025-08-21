@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 
 #include "quantum.h"
+#include "os_detection.h"
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -92,9 +93,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             } else {
                 if (timer_elapsed(user0_timer) < TAPPING_TERM) {
                     register_code(KC_LCTL);
-                    wait_ms(10);                // Ctrl が確実に押された状態を伝える
+                    wait_ms(10);
                     register_code(KC_MS_BTN1);
-                    wait_ms(30);                // クリックを認識させる
+                    wait_ms(30);
                     unregister_code(KC_MS_BTN1);
                     wait_ms(10);
                     unregister_code(KC_LCTL);
@@ -136,7 +137,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
         case USER7:
-            tap_code16(C(KC_UP));
+            switch (detected_host_os()) {
+                case OS_MACOS:
+                    tap_code16(C(KC_UP));
+                    break;
+                case OS_WINDOWS:
+                    if (record->event.pressed) {
+                        register_code(KC_LGUI);
+                        wait_ms(10);
+                        register_code(KC_TAB);
+                        wait_ms(30);
+                        unregister_code(KC_TAB);
+                    } else {
+                        unregister_code(KC_LGUI);
+                    }
+                    break;
+                default:
+                    tap_code16(C(KC_UP));
+                    break;
+            }
             return false;
 
     }
