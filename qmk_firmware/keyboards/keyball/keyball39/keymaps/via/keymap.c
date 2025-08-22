@@ -164,7 +164,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case USER7:
             switch (detected_host_os()) {
                 case OS_MACOS:
-                    tap_code16(C(KC_UP));
+                    if (record->event.pressed) {
+                        register_code(KC_RCTL);
+                        wait_ms(10);
+                        register_code(KC_UP);
+                        wait_ms(30);
+                        unregister_code(KC_UP);
+                    } else {
+                        unregister_code(KC_RCTL);
+                    }
                     break;
                 case OS_WINDOWS:
                     if (record->event.pressed) {
