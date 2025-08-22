@@ -278,7 +278,7 @@ static void keyball_set_auto_mouse_timeout(uint16_t timeout) {
     keyball.auto_mouse_layer_timeout = timeout;
 }
 
-static uint16_t get_auto_mouse_keep_time(void) {
+uint16_t get_auto_mouse_keep_time(void) {
 #ifdef AUTO_MOUSE_LAYER_KEEP_TIME
         return AUTO_MOUSE_LAYER_KEEP_TIME;
 #else

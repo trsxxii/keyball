@@ -212,6 +212,8 @@ void keyball_on_apply_motion_to_mouse_move(keyball_motion_t *m, report_mouse_t *
 /// You can change the default algorithm by override this function.
 void keyball_on_apply_motion_to_mouse_scroll(keyball_motion_t *m, report_mouse_t *r, bool is_left);
 
+uint16_t get_auto_mouse_keep_time(void);
+
 //////////////////////////////////////////////////////////////////////////////
 // Public API functions
 

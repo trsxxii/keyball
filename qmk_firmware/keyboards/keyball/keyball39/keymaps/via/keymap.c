@@ -72,6 +72,14 @@ void oledkit_render_info_user(void) {
 }
 #endif
 
+static inline void kill_auto_mouse_if_needed(void) {
+    if (layer_state_is(AUTO_MOUSE_DEFAULT_LAYER)) {
+        layer_off(AUTO_MOUSE_DEFAULT_LAYER);
+        set_auto_mouse_timeout(get_auto_mouse_keep_time());
+        keyball.total_mouse_movement = 0;
+    }
+}
+
 enum custom_keycodes {
     USER0 = SAFE_RANGE, // ホールドでスクロールモード
     USER1,              // ミュート
@@ -85,7 +93,24 @@ enum custom_keycodes {
 
 static uint16_t user0_timer;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (IS_QK_LAYER_TAP(keycode) || IS_QK_MOD_TAP(keycode)) {
+        kill_auto_mouse_if_needed();
+    }
+
     switch (keycode) {
+        case KC_LCTL:
+        case KC_RCTL:
+        case KC_LSFT:
+        case KC_RSFT:
+        case KC_LALT:
+        case KC_RALT:
+        case KC_LGUI:
+        case KC_RGUI:
+            if (record->event.pressed) {
+                kill_auto_mouse_if_needed();
+            }
+            return true;
+        
         case USER0:
             if (record->event.pressed) {
                 user0_timer = timer_read();
@@ -162,7 +187,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
-#ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
 bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
     switch (keycode) {
         case SCRL_MO:
@@ -177,4 +201,3 @@ bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
     }
     return is_mouse_record_user(keycode, record);
 }
-#endif
