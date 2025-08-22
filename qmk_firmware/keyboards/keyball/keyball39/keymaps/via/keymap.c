@@ -58,6 +58,9 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
     keyball_handle_auto_mouse_layer_change(state);
 #endif
+    if (layer_state_cmp(state, 2) || layer_state_cmp(state, 4)) {
+        tap_code(KC_LNG2);
+    }
     return state;
 }
 
