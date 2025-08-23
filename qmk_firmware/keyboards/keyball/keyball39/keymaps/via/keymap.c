@@ -19,7 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include QMK_KEYBOARD_H
 
 #include "quantum.h"
-#include "os_detection.h"
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -197,32 +196,15 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             tap_code(KC_MEDIA_PREV_TRACK);
             return false;
 
-        // Mission Control
+        // MacのMission Control(WinはPowerToysのKeyboard Managerでタスクビューに変更する)
         case USER7:
-            switch (detected_host_os()) {
-                case OS_MACOS:
-                    if (record->event.pressed) {
-                        register_code(KC_RCTL);
-                        wait_ms(10);
-                        register_code(KC_UP);
-                        unregister_code(KC_UP);
-                    } else {
-                        unregister_code(KC_RCTL);
-                    }
-                    break;
-                case OS_WINDOWS:
-                    if (record->event.pressed) {
-                        register_code(KC_LGUI);
-                        wait_ms(10);
-                        register_code(KC_TAB);
-                        unregister_code(KC_TAB);
-                    } else {
-                        unregister_code(KC_LGUI);
-                    }
-                    break;
-                default:
-                    tap_code16(C(KC_UP));
-                    break;
+            if (record->event.pressed) {
+                register_code(KC_RCTL);
+                wait_ms(10);
+                register_code(KC_UP);
+                unregister_code(KC_UP);
+            } else {
+                unregister_code(KC_RCTL);
             }
             return false;
 
