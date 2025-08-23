@@ -37,7 +37,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #endif
 
 // registerとunregisterの感覚ms
-#define TAP_CODE_DELAY 5
+#define TAP_CODE_DELAY 30
 
 // オートマウスレイヤーを有効化
 #define POINTING_DEVICE_AUTO_MOUSE_ENABLE

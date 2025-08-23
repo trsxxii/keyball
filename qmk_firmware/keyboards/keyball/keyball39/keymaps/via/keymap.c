@@ -151,7 +151,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                     register_code(KC_LCTL);
                     wait_ms(10);
                     register_code(KC_MS_BTN1);
-                    wait_ms(30);
                     unregister_code(KC_MS_BTN1);
                     wait_ms(10);
                     unregister_code(KC_LCTL);
@@ -206,7 +205,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         register_code(KC_RCTL);
                         wait_ms(10);
                         register_code(KC_UP);
-                        wait_ms(30);
                         unregister_code(KC_UP);
                     } else {
                         unregister_code(KC_RCTL);
@@ -217,7 +215,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                         register_code(KC_LGUI);
                         wait_ms(10);
                         register_code(KC_TAB);
-                        wait_ms(30);
                         unregister_code(KC_TAB);
                     } else {
                         unregister_code(KC_LGUI);
