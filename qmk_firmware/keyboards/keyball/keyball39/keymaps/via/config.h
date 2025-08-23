@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+// レイヤー数は7
 #define DYNAMIC_KEYMAP_LAYER_COUNT 7 
 
 #ifdef RGBLIGHT_ENABLE
@@ -35,11 +36,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#    define RGBLIGHT_EFFECT_TWINKLE
 #endif
 
+// registerとunregisterの感覚ms
 #define TAP_CODE_DELAY 5
 
+// オートマウスレイヤーを有効化
 #define POINTING_DEVICE_AUTO_MOUSE_ENABLE
+
+// オートマウスレイヤーは5にする
 #define AUTO_MOUSE_DEFAULT_LAYER 5
+
+// 経過時間でオートマウスレイヤーを終了する
 #define AUTO_MOUSE_LAYER_KEEP_TIME 30000
 
+// HOLDとTAPの切り替え時間
 #define TAPPING_TERM 160
+
+// TAPPING_TERMより短い時間内でTAPした場合にHOLDとして扱う
 #define PERMISSIVE_HOLD

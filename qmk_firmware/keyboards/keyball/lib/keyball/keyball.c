@@ -33,6 +33,7 @@ const uint16_t AML_TIMEOUT_MIN = 100;
 const uint16_t AML_TIMEOUT_MAX = 1000;
 const uint16_t AML_TIMEOUT_QU  = 50;   // Quantization Unit
 
+// オートマウスレイヤーに移行するまでの閾値
 const uint16_t AML_ACTIVATE_THRESHOLD = 3;
 
 static const char BL = '\xB0'; // Blank indicator character

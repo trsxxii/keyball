@@ -51,13 +51,37 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     RGB_RMOD , RGB_HUD  , RGB_SAD  , RGB_VAD  , SCRL_DVD ,                            CPI_D1K  , CPI_D100 , CPI_I100 , CPI_I1K  , KBC_SAVE ,
     QK_BOOT  , KBC_RST  , _______  , _______  , _______  , _______  ,      _______  , _______  , _______  , _______  , KBC_RST  , QK_BOOT
   ),
+
+  [4] = LAYOUT_universal(
+    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
+    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
+    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
+    _______  , _______  , _______  , _______  , _______  , _______  ,      _______  , _______  , _______  , _______  , _______  , _______
+  ),
+
+  [5] = LAYOUT_universal(
+    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
+    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
+    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
+    _______  , _______  , _______  , _______  , _______  , _______  ,      _______  , _______  , _______  , _______  , _______  , _______
+  ),
+
+  [6] = LAYOUT_universal(
+    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
+    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
+    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
+    _______  , _______  , _______  , _______  , _______  , _______  ,      _______  , _______  , _______  , _______  , _______  , _______
+  ),
 };
 // clang-format on
 
 layer_state_t layer_state_set_user(layer_state_t state) {
 #ifdef POINTING_DEVICE_AUTO_MOUSE_ENABLE
+    // オートマウスレイヤーに切り替える
     keyball_handle_auto_mouse_layer_change(state);
 #endif
+
+    // レイヤー2と4に切り替えときは英数に変更する
     if (layer_state_cmp(state, 2) || layer_state_cmp(state, 4)) {
         tap_code(KC_LNG2);
     }
@@ -75,6 +99,7 @@ void oledkit_render_info_user(void) {
 }
 #endif
 
+// オートマウスレイヤーだったらデフォルトレイヤーに切り替える
 static inline void kill_auto_mouse_if_needed(void) {
     if (layer_state_is(AUTO_MOUSE_DEFAULT_LAYER)) {
         layer_off(AUTO_MOUSE_DEFAULT_LAYER);
@@ -91,16 +116,18 @@ enum custom_keycodes {
     USER4,              // 再生/一時停止
     USER5,              // 次のトラック
     USER6,              // 前のトラック
-    USER7               // Mac用 Mission Control
+    USER7               // Mission Control
 };
 
 static uint16_t user0_timer;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // レイヤーキーHOLDかモッドタップ時はオートマウスレイヤーを解除する
     if (IS_QK_LAYER_TAP(keycode) || IS_QK_MOD_TAP(keycode)) {
         kill_auto_mouse_if_needed();
     }
 
     switch (keycode) {
+        // Modifier系のキーをHOLDした時点でオートマウスレイヤーを解除する
         case KC_LCTL:
         case KC_RCTL:
         case KC_LSFT:
@@ -114,6 +141,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return true;
         
+        // ホールド時はスクロールモード、タップ時はCNTL+左クリック
         case USER0:
             if (record->event.pressed) {
                 user0_timer = timer_read();
@@ -132,6 +160,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
+        // ミュート
         case USER1:
             if (record->event.pressed) {
                 register_code(KC_AUDIO_MUTE);
@@ -140,14 +169,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
+        // 音量アップ
         case USER2:
             tap_code(KC_AUDIO_VOL_UP);
             return false;
 
+        // 音量ダウン
         case USER3:
             tap_code(KC_AUDIO_VOL_DOWN);
             return false;
 
+        // 再生/一時停止
         case USER4:
             if (record->event.pressed) {
                 register_code(KC_MEDIA_PLAY_PAUSE);
@@ -156,14 +188,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
 
+        // 次のトラック
         case USER5:
             tap_code(KC_MEDIA_NEXT_TRACK);
             return false;
 
+        // 前のトラック
         case USER6:
             tap_code(KC_MEDIA_PREV_TRACK);
             return false;
 
+        // Mission Control
         case USER7:
             switch (detected_host_os()) {
                 case OS_MACOS:
@@ -200,6 +235,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 
 bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
     switch (keycode) {
+        // マウスレイヤーで使うキーはすべてマウスボタンとすることでマウスレイヤーを抜けないようにする
         case SCRL_MO:
         case KC_MS_BTN1:
         case KC_MS_BTN2:
