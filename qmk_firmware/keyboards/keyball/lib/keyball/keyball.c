@@ -241,10 +241,43 @@ __attribute__((weak)) void keyball_on_apply_motion_to_mouse_scroll(keyball_motio
 #endif
 }
 
+// 移動量によってスピードを変化させる
+// (細かい操作をするときはゆっくり、大きな移動をするときは速く)
+static void adjust_mouse_speed(keyball_motion_t *m) {
+    int16_t movement_size = abs(m->x) + abs(m->y);
+
+    float speed_multiplier = 1.0;
+    if (movement_size > 60) {        // 60~
+        speed_multiplier = 3.0;
+    } else if (movement_size > 30) { // 31~60
+        speed_multiplier = 1.5;
+    } else if (movement_size > 15) { // 16~30
+        speed_multiplier = 1.2;
+    } else if (movement_size > 8) {  // 9~15
+        speed_multiplier = 1.0;
+    } else if (movement_size > 6) {  // 7,8
+        speed_multiplier = 0.85;
+    } else if (movement_size > 4) {  // 5,6
+        speed_multiplier = 0.7;
+    } else if (movement_size > 3) {  // 4
+        speed_multiplier = 0.5;
+    } else if (movement_size > 2) {  // 3
+        speed_multiplier = 0.3;
+    } else if (movement_size > 1) {  // 2
+        speed_multiplier = 0.15;
+    } else {                         // 0,1
+        // NOP
+    }
+
+    m->x = clip2int8((int16_t)(m->x * speed_multiplier));
+    m->y = clip2int8((int16_t)(m->y * speed_multiplier));
+}
+
 static void motion_to_mouse(keyball_motion_t *m, report_mouse_t *r, bool is_left, bool as_scroll) {
     if (as_scroll) {
         keyball_on_apply_motion_to_mouse_scroll(m, r, is_left);
     } else {
+        adjust_mouse_speed(m);
         keyball_on_apply_motion_to_mouse_move(m, r, is_left);
     }
 }
