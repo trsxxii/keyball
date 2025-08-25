@@ -115,7 +115,8 @@ enum custom_keycodes {
     USER4,              // 再生/一時停止
     USER5,              // 次のトラック
     USER6,              // 前のトラック
-    USER7               // Mission Control
+    USER7,              // Mission Control
+    USER8               // Ctrl + Shift
 };
 
 static uint16_t user0_timer;
@@ -205,6 +206,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 unregister_code(KC_UP);
             } else {
                 unregister_code(KC_RCTL);
+            }
+            return false;
+
+        // Ctrl + Shift
+        case USER8:
+            if (record->event.pressed) {
+                register_code(KC_LCTL);
+                register_code(KC_LSFT);
+            } else {
+                unregister_code(KC_LCTL);
+                unregister_code(KC_LSFT);
             }
             return false;
 
