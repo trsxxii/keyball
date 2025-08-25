@@ -79,11 +79,6 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     // オートマウスレイヤーに切り替える
     keyball_handle_auto_mouse_layer_change(state);
 #endif
-
-    // レイヤー2と4に切り替えときは英数に変更する
-    if (layer_state_cmp(state, 2) || layer_state_cmp(state, 4)) {
-        tap_code(KC_LNG2);
-    }
     return state;
 }
 
@@ -124,6 +119,37 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // レイヤーキーHOLDかモッドタップ時はオートマウスレイヤーを解除する
     if (IS_QK_LAYER_TAP(keycode) || IS_QK_MOD_TAP(keycode)) {
         kill_auto_mouse_if_needed();
+    }
+
+    if (layer_state_is(2)) {
+        switch (keycode) {
+            case KC_QUOT:  // '
+            case KC_AT:    // @
+            case KC_DQUO:  // "
+            case KC_SCLN:  // ;
+            // case KC_EXLM:  // !
+            case KC_DLR:   // $
+            case KC_COLN:  // :
+            case KC_CIRC:  // ^
+            case KC_ASTR:  // *
+            case KC_BSLS:  // (バックスラッシュ)
+            case KC_HASH:  // #
+            case KC_AMPR:  // &
+            case KC_UNDS:  // _
+            case KC_PLUS:  // +
+            case KC_MINS:  // -
+            case KC_PIPE:  // |
+            case KC_EQL:   // =
+            case KC_PERC:  // %
+                tap_code(KC_LNG2);
+                return true;
+        }
+    } else if (layer_state_is(4)) {
+        switch (keycode) {
+            case KC_DOT:  // .
+                tap_code(KC_LNG2);
+                return true;
+        }
     }
 
     switch (keycode) {
