@@ -120,6 +120,15 @@ static inline void kill_auto_mouse_if_needed(void) {
     }
 }
 
+// Macでたまにスクロールが効かなくなる問題に対応するためx,yは常に0にする
+report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
+    if (keyball_get_scroll_mode()) {
+        mouse_report.x = 0;
+        mouse_report.y = 0;
+    }
+    return mouse_report;
+}
+
 static uint16_t user0_timer;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // レイヤーキーHOLDかモッドタップ時はオートマウスレイヤーを解除する
