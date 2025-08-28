@@ -20,56 +20,74 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "quantum.h"
 
+enum custom_keycodes {
+    USER0 = SAFE_RANGE, // ホールドでスクロールモード
+    USER1,              // ミュート
+    USER2,              // 音量アップ
+    USER3,              // 音量ダウン
+    USER4,              // 再生/一時停止
+    USER5,              // 次のトラック
+    USER6,              // 前のトラック
+    USER7,              // Mission Control
+    USER8               // Ctrl + Shift
+};
+
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-  // keymap for default (VIA)
+  // Layer 0 (Base)
   [0] = LAYOUT_universal(
-    KC_Q     , KC_W     , KC_E     , KC_R     , KC_T     ,                            KC_Y     , KC_U     , KC_I     , KC_O     , KC_P     ,
-    KC_A     , KC_S     , KC_D     , KC_F     , KC_G     ,                            KC_H     , KC_J     , KC_K     , KC_L     , KC_MINS  ,
-    KC_Z     , KC_X     , KC_C     , KC_V     , KC_B     ,                            KC_N     , KC_M     , KC_COMM  , KC_DOT   , KC_SLSH  ,
-    KC_LCTL  , KC_LGUI  , KC_LALT  ,LSFT_T(KC_LNG2),LT(1,KC_SPC),LT(3,KC_LNG1),KC_BSPC,LT(2,KC_ENT),LSFT_T(KC_LNG2),KC_RALT,KC_RGUI, KC_RSFT
+    KC_Q           , KC_W           , KC_E           , KC_R           , KC_T           ,                            KC_Y           , KC_U           , KC_I           , KC_O           , KC_P           ,
+    KC_A           , KC_S           , KC_D           , KC_F           , LT(3,KC_G)     ,                            LT(4,KC_H)     , KC_J           , KC_K           , KC_L           , KC_MINUS       ,
+    KC_Z           , KC_X           , KC_C           , KC_V           , KC_B           ,                            KC_N           , KC_M           , KC_COMM        , KC_DOT         , KC_SLSH        ,
+    USER8          , KC_LGUI        , KC_LALT        , LSFT_T(KC_LNG2), LT(1,KC_SPC)   , LCTL_T(KC_LNG1),  KC_BSPC, LT(2,KC_ENT)   , _______        , _______        , _______        , KC_GRV
   ),
 
+  // Layer 1 (Navigation)
   [1] = LAYOUT_universal(
-    KC_F1    , KC_F2    , KC_F3    , KC_F4    , KC_RBRC  ,                            KC_F6    , KC_F7    , KC_F8    , KC_F9    , KC_F10   ,
-    KC_F5    , KC_EXLM  , S(KC_6)  ,S(KC_INT3), S(KC_8)  ,                           S(KC_INT1), KC_BTN1  , KC_PGUP  , KC_BTN2  , KC_SCLN  ,
-    S(KC_EQL),S(KC_LBRC),S(KC_7)   , S(KC_2)  ,S(KC_RBRC),                            KC_LBRC  , KC_DLR   , KC_PGDN  , KC_BTN3  , KC_F11   ,
-    KC_INT1  , KC_EQL   , S(KC_3)  , _______  , _______  , _______  ,      TO(2)    , TO(0)    , _______  , KC_RALT  , KC_RGUI  , KC_F12
+    KC_ESC         , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,                            XXXXXXX        , KC_HOME        , KC_UP          , KC_END         , XXXXXXX        ,
+    KC_TAB         , A(KC_1)        , A(KC_2)        , A(KC_3)        , XXXXXXX        ,                            XXXXXXX        , KC_LEFT        , KC_DOWN        , KC_RIGHT       , KC_PAGE_UP     ,
+    XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,                            XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , KC_PAGE_DOWN   ,
+    XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,  KC_DEL , KC_LSFT        , XXXXXXX        , XXXXXXX        , XXXXXXX      , TT(5)
   ),
 
+  // Layer 2 (Symbols)
   [2] = LAYOUT_universal(
-    KC_TAB   , KC_7     , KC_8     , KC_9     , KC_MINS  ,                            KC_NUHS  , _______  , KC_BTN3  , _______  , KC_BSPC  ,
-   S(KC_QUOT), KC_4     , KC_5     , KC_6     ,S(KC_SCLN),                            S(KC_9)  , KC_BTN1  , KC_UP    , KC_BTN2  , KC_QUOT  ,
-    KC_SLSH  , KC_1     , KC_2     , KC_3     ,S(KC_MINS),                           S(KC_NUHS), KC_LEFT  , KC_DOWN  , KC_RGHT  , _______  ,
-    KC_ESC   , KC_0     , KC_DOT   , KC_DEL   , KC_ENT   , KC_BSPC  ,      _______  , _______  , _______  , _______  , _______  , _______
+    KC_QUOT        , KC_DQUO        , KC_EXLM        , XXXXXXX        , KC_ASTR        ,                            XXXXXXX        , KC_UNDS        , KC_PIPE        , XXXXXXX        , KC_PERC        ,
+    KC_AT          , KC_SCLN        , KC_DLR         , XXXXXXX        , XXXXXXX        ,                            KC_HASH        , KC_PLUS        , XXXXXXX        , KC_EQL         , XXXXXXX        ,
+    XXXXXXX        , XXXXXXX        , KC_COLN        , KC_CIRC        , KC_BSLS        ,                            KC_AMPR        , KC_MINS        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,
+    XXXXXXX        , XXXXXXX        , XXXXXXX        , _______        , _______        , _______        , _______ , _______        , _______        , _______        , _______        , TT(6)
   ),
 
+  // Layer 3 (Brackets)
   [3] = LAYOUT_universal(
-    RGB_TOG  , AML_TO   , AML_I50  , AML_D50  , _______  ,                            _______  , _______  , SSNP_HOR , SSNP_VRT , SSNP_FRE ,
-    RGB_MOD  , RGB_HUI  , RGB_SAI  , RGB_VAI  , SCRL_DVI ,                            _______  , _______  , _______  , _______  , _______  ,
-    RGB_RMOD , RGB_HUD  , RGB_SAD  , RGB_VAD  , SCRL_DVD ,                            CPI_D1K  , CPI_D100 , CPI_I100 , CPI_I1K  , KBC_SAVE ,
-    QK_BOOT  , KBC_RST  , _______  , _______  , _______  , _______  ,      _______  , _______  , _______  , _______  , KBC_RST  , QK_BOOT
+    KC_CAPS        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,                            XXXXXXX        , XXXXXXX        , KC_LCBR        , KC_RCBR        , XXXXXXX        ,
+    XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,                            XXXXXXX        , XXXXXXX        , KC_LPRN        , KC_RPRN        , XXXXXXX        ,
+    XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,                            XXXXXXX        , XXXXXXX        , KC_LBRC        , KC_RBRC        , XXXXXXX        ,
+    XXXXXXX        , XXXXXXX        , XXXXXXX        , _______        , _______        , _______        , _______ , _______        , _______        , _______        , _______        , XXXXXXX
   ),
 
+  // Layer 4 (Numpad + Media keys)
   [4] = LAYOUT_universal(
-    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
-    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
-    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
-    _______  , _______  , _______  , _______  , _______  , _______  ,      _______  , _______  , _______  , _______  , _______  , _______
+    XXXXXXX        , KC_1           , KC_2           , KC_3           , XXXXXXX        ,                            XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,
+    XXXXXXX        , KC_4           , KC_5           , KC_6           , KC_DOT         ,                            XXXXXXX        , XXXXXXX        , USER3          , USER1          , USER2          ,
+    XXXXXXX        , KC_7           , KC_8           , KC_9           , KC_SLSH        ,                            XXXXXXX        , XXXXXXX        , USER6          , USER4          , USER5          ,
+    XXXXXXX        , XXXXXXX        , KC_0           , _______        , _______        , _______        , _______ , _______        , _______        , _______        , _______        , XXXXXXX
   ),
 
+  // Layer 5 (Auto Mouse Layer)
   [5] = LAYOUT_universal(
-    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
-    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
-    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
-    _______  , _______  , _______  , _______  , _______  , _______  ,      _______  , _______  , _______  , _______  , _______  , _______
+    _______        , _______        , _______        , _______        , _______        ,                            _______        , _______        , _______        , _______        , _______        ,
+    _______        , _______        , _______        , _______        , _______        ,                            _______        , KC_BTN1        , USER0          , KC_BTN2        , _______        ,
+    _______        , _______        , _______        , _______        , _______        ,                            _______        , KC_BTN4        , USER7          , KC_BTN5        , _______        ,
+    _______        , _______        , _______        , _______        , _______        , _______        , _______ , _______        , _______        , _______        , _______        , _______
   ),
 
+  // Layer 6 (Function + Kb codes)
   [6] = LAYOUT_universal(
-    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
-    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
-    _______  , _______  , _______  , _______  , _______  ,                            _______  , _______  , _______  , _______  , _______  ,
-    _______  , _______  , _______  , _______  , _______  , _______  ,      _______  , _______  , _______  , _______  , _______  , _______
+    XXXXXXX        , KC_F1          , KC_F2          , KC_F3          , XXXXXXX        ,                            XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , KBC_SAVE       ,
+    XXXXXXX        , KC_F4          , KC_F5          , KC_F6          , XXXXXXX        ,                            CPI_I100       , SCRL_DVI       , XXXXXXX        , XXXXXXX        , XXXXXXX        ,
+    XXXXXXX        , KC_F7          , KC_F8          , KC_F9          , KC_F12         ,                            CPI_D100       , SCRL_DVD       , XXXXXXX        , XXXXXXX        , XXXXXXX        ,
+    XXXXXXX        , KC_F10         , KC_F11         , _______        , _______        , _______        , _______ , _______        , _______        , _______        , _______        , XXXXXXX
   ),
 };
 // clang-format on
@@ -101,18 +119,6 @@ static inline void kill_auto_mouse_if_needed(void) {
         keyball.total_mouse_movement = 0;
     }
 }
-
-enum custom_keycodes {
-    USER0 = SAFE_RANGE, // ホールドでスクロールモード
-    USER1,              // ミュート
-    USER2,              // 音量アップ
-    USER3,              // 音量ダウン
-    USER4,              // 再生/一時停止
-    USER5,              // 次のトラック
-    USER6,              // 前のトラック
-    USER7,              // Mission Control
-    USER8               // Ctrl + Shift
-};
 
 static uint16_t user0_timer;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
