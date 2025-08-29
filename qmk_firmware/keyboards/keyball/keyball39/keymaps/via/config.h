@@ -49,7 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define AUTO_MOUSE_LAYER_KEEP_TIME 30000
 
 // HOLDとTAPの切り替え時間
-#define TAPPING_TERM 140
+#define TAPPING_TERM 150
 
 // TAPPING_TERMより短い時間内で別キーをTAPした場合にHOLDとして扱う
 #define PERMISSIVE_HOLD
