@@ -251,16 +251,52 @@ bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
 }
 
 // コンボキーの定義
-// - WとEでESC
-// - SとDでTAB
 enum combo_events {
-    ESC_COMBO,
-    TAB_COMBO,
+    ESC_COMBO,      // Esc
+    TAB_COMBO,      // Tab
+    CURLY_COMBO,    // {}
+    PAREN_COMBO,    // ()
+    BRACK_COMBO,    // []
 };
 
 const uint16_t PROGMEM esc_combo[] = {KC_W, KC_E, COMBO_END};
 const uint16_t PROGMEM tab_combo[] = {KC_S, KC_D, COMBO_END};
+const uint16_t PROGMEM curly_combo[] = {KC_I, KC_O, COMBO_END};
+const uint16_t PROGMEM paren_combo[] = {KC_K, KC_L, COMBO_END};
+const uint16_t PROGMEM brack_combo[] = {KC_COMM, KC_DOT, COMBO_END};
 combo_t key_combos[] = {
-    [ESC_COMBO] = COMBO(esc_combo, KC_ESC),
-    [TAB_COMBO] = COMBO(tab_combo, KC_TAB),
+    [ESC_COMBO] = COMBO(esc_combo, KC_NO),
+    [TAB_COMBO] = COMBO(tab_combo, KC_NO),
+    [CURLY_COMBO] = COMBO(curly_combo, KC_NO),
+    [PAREN_COMBO] = COMBO(paren_combo, KC_NO),
+    [BRACK_COMBO] = COMBO(brack_combo, KC_NO),
 };
+
+void process_combo_event(uint16_t combo_index, bool pressed) {
+    if (!pressed) return;  // 離したときは無視
+
+    switch(combo_index) {
+        case ESC_COMBO:
+            tap_code16(KC_ESC); // ESC
+            break;
+
+        case TAB_COMBO:
+            tap_code16(KC_TAB); // TAB
+            break;
+
+        case CURLY_COMBO:
+            tap_code16(KC_LCBR); // {
+            tap_code16(KC_RCBR); // }
+            break;
+
+        case PAREN_COMBO:
+            tap_code16(KC_LPRN); // (
+            tap_code16(KC_RPRN); // )
+            break;
+
+        case BRACK_COMBO:
+            tap_code16(KC_LBRC); // [
+            tap_code16(KC_RBRC); // ]
+            break;
+    }
+}
