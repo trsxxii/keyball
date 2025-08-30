@@ -287,16 +287,19 @@ void process_combo_event(uint16_t combo_index, bool pressed) {
         case CURLY_COMBO:
             tap_code16(KC_LCBR); // {
             tap_code16(KC_RCBR); // }
+            tap_code(KC_LEFT);   // カーソルを左に戻す
             break;
 
         case PAREN_COMBO:
             tap_code16(KC_LPRN); // (
             tap_code16(KC_RPRN); // )
+            tap_code(KC_LEFT);   // カーソルを左に戻す
             break;
 
         case BRACK_COMBO:
             tap_code16(KC_LBRC); // [
             tap_code16(KC_RBRC); // ]
+            tap_code(KC_LEFT);   // カーソルを左に戻す
             break;
     }
 }
