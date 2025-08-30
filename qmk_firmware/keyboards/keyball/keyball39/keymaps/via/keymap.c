@@ -249,3 +249,18 @@ bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
     }
     return is_mouse_record_user(keycode, record);
 }
+
+// コンボキーの定義
+// - WとEでESC
+// - SとDでTAB
+enum combo_events {
+    ESC_COMBO,
+    TAB_COMBO,
+};
+
+const uint16_t PROGMEM esc_combo[] = {KC_W, KC_E, COMBO_END};
+const uint16_t PROGMEM tab_combo[] = {KC_S, KC_D, COMBO_END};
+combo_t key_combos[] = {
+    [ESC_COMBO] = COMBO(esc_combo, KC_ESC),
+    [TAB_COMBO] = COMBO(tab_combo, KC_TAB),
+};
