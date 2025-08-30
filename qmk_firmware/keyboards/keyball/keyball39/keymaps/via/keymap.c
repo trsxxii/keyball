@@ -21,15 +21,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "quantum.h"
 
 enum custom_keycodes {
-    USER0 = SAFE_RANGE, // ホールドでスクロールモード
-    USER1,              // ミュート
-    USER2,              // 音量アップ
-    USER3,              // 音量ダウン
-    USER4,              // 再生/一時停止
-    USER5,              // 次のトラック
-    USER6,              // 前のトラック
-    USER7,              // Mission Control
-    USER8               // Ctrl + Shift
+    HLD_SCRMO = SAFE_RANGE, // ホールドでスクロールモード
+    MY_MUTE,                // ミュート
+    MY_VOLUP,               // 音量アップ
+    MY_VOLDN,               // 音量ダウン
+    MY_PLAY,                // 再生/一時停止
+    MY_NEXT,                // 次のトラック
+    MY_PREV,                // 前のトラック
+    MY_MSCTRL,              // Mission Control
+    MY_CTRL_SHFT,           // Ctrl + Shift
 };
 
 // clang-format off
@@ -39,7 +39,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_Q           , KC_W           , KC_E           , KC_R           , KC_T           ,                            KC_Y           , KC_U           , KC_I           , KC_O           , KC_P           ,
     KC_A           , KC_S           , KC_D           , KC_F           , LT(3,KC_G)     ,                            LT(4,KC_H)     , KC_J           , KC_K           , KC_L           , KC_MINUS       ,
     KC_Z           , KC_X           , KC_C           , KC_V           , KC_B           ,                            KC_N           , KC_M           , KC_COMM        , KC_DOT         , KC_SLSH        ,
-    USER8          , KC_LGUI        , KC_LALT        , LSFT_T(KC_LNG2), LT(1,KC_SPC)   , LCTL_T(KC_LNG1),  KC_BSPC, LT(2,KC_ENT)   , _______        , _______        , _______        , KC_GRV
+    MY_CTRL_SHFT   , KC_LGUI        , KC_LALT        , LSFT_T(KC_LNG2), LT(1,KC_SPC)   , LCTL_T(KC_LNG1),  KC_BSPC, LT(2,KC_ENT)   , _______        , _______        , _______        , KC_GRV
   ),
 
   // Layer 1 (Navigation)
@@ -69,16 +69,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // Layer 4 (Numpad + Media keys)
   [4] = LAYOUT_universal(
     XXXXXXX        , KC_1           , KC_2           , KC_3           , XXXXXXX        ,                            XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,
-    XXXXXXX        , KC_4           , KC_5           , KC_6           , KC_DOT         ,                            XXXXXXX        , XXXXXXX        , USER3          , USER1          , USER2          ,
-    XXXXXXX        , KC_7           , KC_8           , KC_9           , KC_SLSH        ,                            XXXXXXX        , XXXXXXX        , USER6          , USER4          , USER5          ,
+    XXXXXXX        , KC_4           , KC_5           , KC_6           , KC_DOT         ,                            XXXXXXX        , XXXXXXX        , MY_VOLDN       , MY_MUTE        , MY_VOLUP       ,
+    XXXXXXX        , KC_7           , KC_8           , KC_9           , KC_SLSH        ,                            XXXXXXX        , XXXXXXX        , MY_PREV        , MY_PLAY        , MY_NEXT        ,
     XXXXXXX        , XXXXXXX        , KC_0           , _______        , _______        , _______        , _______ , _______        , _______        , _______        , _______        , XXXXXXX
   ),
 
   // Layer 5 (Auto Mouse Layer)
   [5] = LAYOUT_universal(
     _______        , _______        , _______        , _______        , _______        ,                            _______        , _______        , _______        , _______        , _______        ,
-    _______        , _______        , _______        , _______        , _______        ,                            _______        , KC_BTN1        , USER0          , KC_BTN2        , _______        ,
-    _______        , _______        , _______        , _______        , _______        ,                            _______        , KC_BTN4        , USER7          , KC_BTN5        , _______        ,
+    _______        , _______        , _______        , _______        , _______        ,                            _______        , KC_BTN1        , HLD_SCRMO      , KC_BTN2        , _______        ,
+    _______        , _______        , _______        , _______        , _______        ,                            _______        , KC_BTN4        , MY_MSCTRL      , KC_BTN5        , _______        ,
     _______        , _______        , _______        , _______        , _______        , _______        , _______ , _______        , _______        , _______        , _______        , _______
   ),
 
@@ -129,7 +129,7 @@ report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
     return mouse_report;
 }
 
-static uint16_t user0_timer;
+static uint16_t hold_scroll_timer;
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     // レイヤーキーHOLDかモッドタップ時はオートマウスレイヤーを解除する
     if (IS_QK_LAYER_TAP(keycode) || IS_QK_MOD_TAP(keycode)) {
@@ -152,12 +152,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return true;
         
         // ホールド時はスクロールモード、タップ時はCNTL+左クリック
-        case USER0:
+        case HLD_SCRMO:
             if (record->event.pressed) {
-                user0_timer = timer_read();
+                hold_scroll_timer = timer_read();
                 keyball_set_scroll_mode(true);
             } else {
-                if (timer_elapsed(user0_timer) < TAPPING_TERM) {
+                if (timer_elapsed(hold_scroll_timer) < TAPPING_TERM) {
                     register_code(KC_LCTL);
                     wait_ms(10);
                     register_code(KC_MS_BTN1);
@@ -170,7 +170,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
         // ミュート
-        case USER1:
+        case MY_MUTE:
             if (record->event.pressed) {
                 register_code(KC_AUDIO_MUTE);
             } else {
@@ -179,17 +179,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
         // 音量アップ
-        case USER2:
+        case MY_VOLUP:
             tap_code(KC_AUDIO_VOL_UP);
             return false;
 
         // 音量ダウン
-        case USER3:
+        case MY_VOLDN:
             tap_code(KC_AUDIO_VOL_DOWN);
             return false;
 
         // 再生/一時停止
-        case USER4:
+        case MY_PLAY:
             if (record->event.pressed) {
                 register_code(KC_MEDIA_PLAY_PAUSE);
             } else {
@@ -198,17 +198,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
         // 次のトラック
-        case USER5:
+        case MY_NEXT:
             tap_code(KC_MEDIA_NEXT_TRACK);
             return false;
 
         // 前のトラック
-        case USER6:
+        case MY_PREV:
             tap_code(KC_MEDIA_PREV_TRACK);
             return false;
 
         // MacのMission Control(WinはPowerToysのKeyboard Managerでタスクビューに変更する)
-        case USER7:
+        case MY_MSCTRL:
             if (record->event.pressed) {
                 register_code(KC_RCTL);
                 wait_ms(10);
@@ -220,7 +220,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
 
         // Ctrl + Shift
-        case USER8:
+        case MY_CTRL_SHFT:
             if (record->event.pressed) {
                 register_code(KC_LCTL);
                 register_code(KC_LSFT);
@@ -243,8 +243,8 @@ bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
         case KC_MS_BTN3:
         case KC_MS_BTN4:
         case KC_MS_BTN5:
-        case USER0:
-        case USER7:
+        case HLD_SCRMO:
+        case MY_MSCTRL:
             return true;
     }
     return is_mouse_record_user(keycode, record);
