@@ -69,8 +69,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   // Layer 4 (Numpad + Media keys)
   [4] = LAYOUT_universal(
     XXXXXXX        , KC_1           , KC_2           , KC_3           , XXXXXXX        ,                            XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,
-    XXXXXXX        , KC_4           , KC_5           , KC_6           , KC_DOT         ,                            XXXXXXX        , XXXXXXX        , MY_VOLDN       , MY_MUTE        , MY_VOLUP       ,
-    XXXXXXX        , KC_7           , KC_8           , KC_9           , KC_SLSH        ,                            XXXXXXX        , XXXXXXX        , MY_PREV        , MY_PLAY        , MY_NEXT        ,
+    XXXXXXX        , KC_4           , KC_5           , KC_6           , KC_SLSH        ,                            XXXXXXX        , XXXXXXX        , MY_VOLDN       , MY_MUTE        , MY_VOLUP       ,
+    XXXXXXX        , KC_7           , KC_8           , KC_9           , KC_DOT         ,                            XXXXXXX        , XXXXXXX        , MY_PREV        , MY_PLAY        , MY_NEXT        ,
     XXXXXXX        , XXXXXXX        , KC_0           , _______        , _______        , _______        , _______ , _______        , _______        , _______        , _______        , XXXXXXX
   ),
 
@@ -84,7 +84,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   // Layer 6 (Function + Kb codes)
   [6] = LAYOUT_universal(
-    XXXXXXX        , KC_F1          , KC_F2          , KC_F3          , XXXXXXX        ,                            XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , KBC_SAVE       ,
+    XXXXXXX        , KC_F1          , KC_F2          , KC_F3          , XXXXXXX        ,                            XXXXXXX        , XXXXXXX        , XXXXXXX        , KBC_RST        , KBC_SAVE       ,
     XXXXXXX        , KC_F4          , KC_F5          , KC_F6          , XXXXXXX        ,                            CPI_I100       , SCRL_DVI       , XXXXXXX        , XXXXXXX        , XXXXXXX        ,
     XXXXXXX        , KC_F7          , KC_F8          , KC_F9          , KC_F12         ,                            CPI_D100       , SCRL_DVD       , XXXXXXX        , XXXXXXX        , XXXXXXX        ,
     XXXXXXX        , KC_F10         , KC_F11         , _______        , _______        , _______        , _______ , _______        , _______        , _______        , _______        , XXXXXXX
