@@ -237,6 +237,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 bool is_mouse_record_kb(uint16_t keycode, keyrecord_t* record) {
     switch (keycode) {
         // マウスレイヤーで使うキーはすべてマウスボタンとすることでマウスレイヤーを抜けないようにする
+        // 逆にそれ以外は抜ける
         case SCRL_MO:
         case KC_MS_BTN1:
         case KC_MS_BTN2:
@@ -274,6 +275,9 @@ combo_t key_combos[] = {
 
 void process_combo_event(uint16_t combo_index, bool pressed) {
     if (!pressed) return;  // 離したときは無視
+
+    // コンボのときはオートマウスレイヤーを解除する
+    kill_auto_mouse_if_needed();
 
     switch(combo_index) {
         case ESC_COMBO:
