@@ -54,5 +54,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // TAPPING_TERMより短い時間内で別キーをTAPした場合にHOLDとして扱う
 #define PERMISSIVE_HOLD
 
+// comboの入力猶予時間 (ミリ秒)
+#define COMBO_TERM 25
+
 // レイヤー数8以下定義にして容量削減
 #define LAYER_STATE_8BIT
