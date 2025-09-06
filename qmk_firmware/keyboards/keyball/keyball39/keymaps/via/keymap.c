@@ -47,7 +47,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_ESC         , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,                            XXXXXXX        , KC_HOME        , KC_UP          , KC_END         , XXXXXXX        ,
     KC_TAB         , A(KC_1)        , A(KC_2)        , A(KC_3)        , XXXXXXX        ,                            XXXXXXX        , KC_LEFT        , KC_DOWN        , KC_RIGHT       , KC_PAGE_UP     ,
     XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,                            XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , KC_PAGE_DOWN   ,
-    XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,  KC_DEL , KC_LSFT        , XXXXXXX        , XXXXXXX        , XXXXXXX      , TT(5)
+    XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,  KC_DEL , KC_LSFT        , XXXXXXX        , XXXXXXX        , XXXXXXX        , TT(5)
   ),
 
   // Layer 2 (Symbols)
@@ -68,7 +68,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   // Layer 4 (Numpad + Media keys)
   [4] = LAYOUT_universal(
-    XXXXXXX        , KC_1           , KC_2           , KC_3           , XXXXXXX        ,                            XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,
+    XXXXXXX        , KC_1           , KC_2           , KC_3           , KC_0           ,                            XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        , XXXXXXX        ,
     XXXXXXX        , KC_4           , KC_5           , KC_6           , KC_SLSH        ,                            XXXXXXX        , XXXXXXX        , MY_VOLDN       , MY_MUTE        , MY_VOLUP       ,
     XXXXXXX        , KC_7           , KC_8           , KC_9           , KC_DOT         ,                            XXXXXXX        , XXXXXXX        , MY_PREV        , MY_PLAY        , MY_NEXT        ,
     XXXXXXX        , XXXXXXX        , KC_0           , _______        , _______        , _______        , _______ , _______        , _______        , _______        , _______        , XXXXXXX
@@ -150,7 +150,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 kill_auto_mouse_if_needed();
             }
             return true;
-        
+
         // ホールド時はスクロールモード、タップ時はCNTL+左クリック
         case HLD_SCRMO:
             if (record->event.pressed) {
@@ -174,7 +174,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             if (record->event.pressed) {
                 register_code(KC_AUDIO_MUTE);
             } else {
-                unregister_code(KC_AUDIO_MUTE); 
+                unregister_code(KC_AUDIO_MUTE);
             }
             return false;
 
